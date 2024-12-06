@@ -20,6 +20,8 @@ However, performancing is still lacking compared to Apple or Nvidia.
 
 ## Install IPEX-LLM
 
+My latest tests were on Ubuntu 24.10 with all the extra 3rd-party drivers already installed. However, I did earlier testing on 24.04 LTS with similar results.
+
 ### Install compute packages
 #### Ubuntu 24.10
 ```bash
@@ -146,4 +148,9 @@ In a separate terminal window, run the model from the same llama-cpp folder.
 
 # You could be able to access the local model through using IDE's like Zed.
 ```
+![clipboard_2024-12-06_17-06](https://github.com/user-attachments/assets/2b30c2e4-92e9-4707-9f94-0f72734c6159)
+
+
 [Original Instructions Here](https://github.com/intel-analytics/ipex-llm/blob/main/docs/mddocs/Quickstart/ollama_quickstart.md)
+
+
