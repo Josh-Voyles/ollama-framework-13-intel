@@ -1,11 +1,10 @@
 # Running Ollama on Framework 13 Intel Ultra Series 1
 
-WARNING: Ubuntu Only.
-I tested this ad nauseam on Fedora trying to get it to work with no luck.
+## WARNING
+Ubuntu Only. I tested this ad nauseam on Fedora trying to get it to work with no luck.
+Also, these instructions are very specific. This setup has many moving parts and slight deviations will break the entire system.
 
-# Installing (To be installed in 'home' folder)
-
-WARNING: There is no need to install Ollama on your system first.
+There is no need to install Ollama on your system first.
 In fact, having Ollama already running on your machine will stop the new server using the Intel driver from working.
 
 However, you can stop the Ollama if it's currently running on your system.
@@ -13,29 +12,28 @@ However, you can stop the Ollama if it's currently running on your system.
 systemctl stop ollama
 ```
 
+## IMPROVEMENTS
+Following these instructions will get you about 50 performance gain (t/s) over using CPU only.
+However, performancing is still lacking compared to Apple or Nvidia.
+
+# Installing (To be installed in 'home' folder)
+
 ## Install IPEX-LLM
-
-### Enable gpu driver support (may not need)
-```bash
-export FORCE_PROBE_VALUE=$(sudo dmesg  | grep i915 | grep -o 'i915\.force_probe=[a-zA-Z0-9]\{4\}')
-
-sudo sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\"\(.*\)\"/\"\1 $FORCE_PROBE_VALUE\"/" /etc/default/grub
-```
 
 ### Install compute packages
 #### Ubuntu 24.10
 ```bash
-apt-get update
-apt-get install -y software-properties-common
+sudo apt-get update
+sudo apt-get install -y software-properties-common
 
 # Add the intel-graphics PPA for 24.10
-add-apt-repository -y ppa:kobuk-team/intel-graphics
+sudo add-apt-repository -y ppa:kobuk-team/intel-graphics
 
 # Install the compute-related packages
-apt-get install -y libze-intel-gpu1 libze1 intel-ocloc intel-opencl-icd clinfo
+sudo apt-get install -y libze-intel-gpu1 libze1 intel-ocloc intel-opencl-icd clinfo
 
 # Install the media-related packages
-apt-get install -y intel-media-va-driver-non-free libmfx1 libmfx-gen1.2 libvpl2 libvpl-tools libva-glx2 va-driver-all vainfo
+sudo apt-get install -y intel-media-va-driver-non-free libmfx1 libmfx-gen1.2 libvpl2 libvpl-tools libva-glx2 va-driver-all vainfo
 ```
 
 #### Ubuntu 24.04 LTS
@@ -55,20 +53,8 @@ sudo apt update
 apt-get install -y libze1 intel-level-zero-gpu intel-opencl-icd clinfo
 ```
 
-### Verify drivers are installed and functional
-Should see arc gpu listed.
-```bash
-clinfo | grep "Device Name"
-```
-
-If you need to add permissions (you can also run clinfo as root)
-```bash
-sudo gpasswd -a ${USER} render
-newgrp render
-```
-
 ## Install oneAPI
-
+I've tested with later versions of the oneapi aps, but run into issues.
 ```bash
 wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
 
@@ -117,8 +103,9 @@ source miniforge3/bin/activate
 ```
 
 ## Install IPEX-LLM
+Python 3.11 is the only one I could get to work.
 ```bash
-conda create -n llm python
+conda create -n llm python=3.11
 conda activate llm
 pip install --pre --upgrade ipex-llm[xpu] --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
 ```
@@ -127,7 +114,7 @@ pip install --pre --upgrade ipex-llm[xpu] --extra-index-url https://pytorch-exte
 ## Install IPEX-LLM for llama-cpp
 
 ```bash
-conda create -n llm-cpp python
+conda create -n llm-cpp python=3.11
 conda activate llm-cpp
 pip install --pre --upgrade ipex-llm[cpp]
 
@@ -148,8 +135,6 @@ export no_proxy=localhost,127.0.0.1
 export ZES_ENABLE_SYSMAN=1
 source /opt/intel/oneapi/setvars.sh
 export SYCL_CACHE_PERSISTENT=1
-# [optional] if you want to run on single GPU, use below command to limit GPU may improve performance
-export ONEAPI_DEVICE_SELECTOR=level_zero:0
 
 ./ollama serve
 ```
@@ -158,9 +143,7 @@ export ONEAPI_DEVICE_SELECTOR=level_zero:0
 In a separate terminal window, run the model from the same llama-cpp folder.
 ```bash
 ./ollama run llama3.2 # running 3.2 model as an example.
-```
 
-```bash
-# need to check performance without setting. With set, 0 is better than 1.
-export SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=0
+# You could be able to access the local model through using IDE's like Zed.
 ```
+[Original Instructions Here](https://github.com/intel-analytics/ipex-llm/blob/main/docs/mddocs/Quickstart/ollama_quickstart.md)
