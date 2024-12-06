@@ -146,7 +146,7 @@ In a separate terminal window, run the model from the same llama-cpp folder.
 ```bash
 ./ollama run llama3.2 # running 3.2 model as an example.
 
-# You could be able to access the local model through using IDE's like Zed.
+# You should be able to access the local model through using IDE's like Zed.
 ```
 ![clipboard_2024-12-06_17-06](https://github.com/user-attachments/assets/2b30c2e4-92e9-4707-9f94-0f72734c6159)
 
