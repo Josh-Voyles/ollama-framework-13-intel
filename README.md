@@ -13,7 +13,7 @@ systemctl stop ollama
 ```
 
 ## IMPROVEMENTS
-Following these instructions will get you about 50 performance gain (t/s) over using CPU only.
+Following these instructions will get you about 50 percent performance gain (t/s) over using CPU only.
 However, performancing is still lacking compared to Apple or Nvidia.
 
 # Installing (To be installed in 'home' folder)
